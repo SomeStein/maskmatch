@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cython build artifacts
+*.so
+*.pyd
+*.c
+*.cpp
+*.pyx.c
+*.pyx.cpp
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Jupyter / notebooks
+.ipynb_checkpoints
+
+# IDE / editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# MacOS / Linux
+.DS_Store
+*.swp
+*.swo
