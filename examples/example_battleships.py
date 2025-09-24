@@ -80,7 +80,7 @@ class Board:
         
 
 # create board
-board = Board(10, 10, [3, 3, 3, 2, 2, 2, 2])
+board = Board(10, 10, [1,2,3,4])
 print(f"\nBoard initialized with width {board.width} and height {board.height}")
 
 mask_lists = board.generate_mask_lists()
@@ -99,14 +99,16 @@ for masks, mult in precombined:
 print(f"\nrun solver...")
 result = solve_disjoint(precombined)
 
-import random as rd
+print(result)
 
-l = len(result)
-n = 100
+# import random as rd
 
-print(f"{l} valid combinatons found")
+# l = len(result)
+# n = 100
 
-print(f" for example: {format(result[rd.randint(0,l-1)], f"0{n}b")}")
+# print(f"{l} valid combinatons found")
+
+# print(f" for example: {format(result[rd.randint(0,l-1)], f"0{n}b")}")
 
 
 
