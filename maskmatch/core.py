@@ -82,3 +82,8 @@ def maskmatch(mask_lists):
     
     # Result
     print(f"Result is: {result}")
+    
+# ToDos 
+# - disgard memory
+# - recurse over indices not bitmasks directly (uint64)
+# - use vectorized SIMD if possible 
