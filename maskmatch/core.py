@@ -17,22 +17,21 @@ def backtrack_with_progress(result, mask_lists):
         current_indices = [idx0]
 
         # Call the normal recursion starting from the second list
-        _backtrack_recursive(result, remaining_lists, current_indices, current_mask)
+        _backtrack_recursive(result, mask_lists, current_indices, current_mask)
 
 def _backtrack_recursive(result, mask_lists, current_indices, current_mask):
     lidx = len(current_indices)
-    m = len(mask_lists) + 1  # +1 because first list already used
+    m = len(mask_lists) 
 
     if lidx == m:
         result.append(current_mask)
         return
 
-    masks = mask_lists[lidx - 1]  # adjust index because first list is already used
+    masks = mask_lists[lidx]  
     for midx in range(len(masks)):
         mask = masks[midx]
         if (current_mask & mask) == 0:
             _backtrack_recursive(result, mask_lists, current_indices + [midx], current_mask | mask)
-
 
 def backtrack_multiplicity(
     group_masks, masks, multiplicity, current_indices, current_mask=0, start_idx=0
@@ -70,7 +69,6 @@ def backtrack_multiplicity(
                 current_mask | mask,
                 idx + 1,
             )
-
 
 def backtrack(valid_masks, mask_lists, current_indices, current_mask=0):
     """
@@ -136,10 +134,29 @@ def solve_disjoint(precombined):
 
     return result
 
+def generate_singlebit_lookup(precombined):
+    
+    lookups = []
+    for masks, mult in precombined: 
+        lookup = dict()
+        for bit in range(100):
+            singlebitmask = 1 << bit 
+            lookup[bit] = set() 
+            for mask in masks: 
+                if mask & singlebitmask == 0: 
+                    lookup[bit].add(mask) 
+        lookups.append(lookup)  
+    return lookups
+
 def maskmatch(mask_lists):
     
+    # generate groups by multiplicity of mask lists
     groups = groups_by_duplicates(mask_lists)
+    
+    # precombine groups into one mask list of (w x h)-bit integers per group 
     precombined = precombine_groups(groups)
+    
+    # subset backtrack algorithm 
     result = solve_disjoint(precombined)
     
     return result

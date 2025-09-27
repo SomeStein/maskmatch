@@ -1,6 +1,7 @@
 # define board class
-from maskmatch.core import groups_by_duplicates, precombine_groups, solve_disjoint
+from maskmatch.core import groups_by_duplicates, precombine_groups, solve_disjoint, generate_singlebit_lookup
 from enum import Enum, auto
+
 
 class CellState(Enum):
     UNKNOWN = auto()
@@ -68,19 +69,20 @@ class Board:
                             bitmask |= 1 << (rr * self.width + cc)
                 bitmasks[ship_size].append(bitmask)
         return bitmasks
-    
+
     def generate_mask_lists(self):
         # generate valid placements
         placements = board._generate_valid_placements()
 
         # transform to bitmasks
         bitmasks = board._generate_bitmasks(placements)
-        
+
         return [bitmasks[ss] for ss in self.ship_sizes]
-        
+
 
 # create board
-board = Board(10, 10, [1,2,3,4])
+#board = Board(10, 10, [6, 4, 4, 3, 3, 3, 2, 2, 2, 2])
+board = Board(10, 10, [6, 4, 4, 3, 3])
 print(f"\nBoard initialized with width {board.width} and height {board.height}")
 
 mask_lists = board.generate_mask_lists()
@@ -95,11 +97,20 @@ precombined = precombine_groups(groups)
 print(f"\ngroups precombined:")
 for masks, mult in precombined:
     print(f".  num masks: {len(masks)}, multiplicity: {mult}")
+    
+    
+lookups = generate_singlebit_lookup(precombined)
 
-print(f"\nrun solver...")
-result = solve_disjoint(precombined)
+for idx, lookup in enumerate(lookups):
+    print(f"\n\nlookup table for index {idx}: ")
+    for bit in lookup:
+        print(f"\n  {bit}-bit set:", len(lookup[bit]))
+        
+        # for mask in lookup[bit]:
+        #     print(format(mask, f"0{100}b"))
 
-print(result)
+# print(f"\nrun solver...")
+# result = solve_disjoint(precombined)
 
 # import random as rd
 
@@ -109,6 +120,3 @@ print(result)
 # print(f"{l} valid combinatons found")
 
 # print(f" for example: {format(result[rd.randint(0,l-1)], f"0{n}b")}")
-
-
-
