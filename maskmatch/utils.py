@@ -1,6 +1,7 @@
 from collections import defaultdict
-from typing import List, Tuple
+from typing import List, Tuple, Set
 import numpy as np
+from numba import njit
 
 
 def _groups_by_duplicates(mask_lists: List[List[int]]) -> List[Tuple[List[int], int]]:
@@ -55,7 +56,12 @@ def _backtrack_multiplicity(
                 idx + 1,
             )
 
-def _precombine_groups(groups):
+def _precombine_groups(mask_lists):
+    
+    # Grouping 
+    groups = _groups_by_duplicates(mask_lists)
+    print(f"groups detected!")
+    
     result = []
     for masks, multiplicity in groups:
 
@@ -96,3 +102,19 @@ def _bit_indices(n):
         n >>= 1  # shift right by 1
         index += 1
     return indices
+
+def _split_hi_lo_arr(bitmasks: List[Set[int]]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    """Splits bitmasks into hi, lo arrays for each set (64+ bits support)."""
+    hi_list = []
+    lo_list = []
+    for s in bitmasks:
+        arr = np.array(list(s))
+        lo = arr & ((1 << 64) - 1)
+        hi = arr >> 64
+        hi_list.append(np.ascontiguousarray(hi, dtype=np.uint64))
+        lo_list.append(np.ascontiguousarray(lo, dtype=np.uint64))
+    return hi_list, lo_list
+
+@njit(cache=True)
+def _candidate_mask(hi: np.uint64, lo: np.uint64, mask_hi: np.uint64, mask_lo: np.uint64):
+    return (hi & mask_hi) == 0 and (lo & mask_lo) == 0
