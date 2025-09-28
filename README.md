@@ -22,5 +22,5 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/maskmatch.git
+git clone https://github.com/SomeStein/maskmatch.git
 cd maskmatch
