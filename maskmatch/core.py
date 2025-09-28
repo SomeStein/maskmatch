@@ -1,4 +1,5 @@
 from maskmatch.utils import _precombine_groups, _generate_lookups, _bit_indices, _split_hi_lo_arr, _candidate_mask
+import itertools
 import numpy as np
 from tqdm import tqdm
 from numba import njit
@@ -74,7 +75,6 @@ def maskmatch(mask_lists):
 
     # Preprocessing
     precombined = _precombine_groups(mask_lists)
-    print(f"groups precombined!")
 
     # Recursion 
     # result = _recursion_on_lookups(precombined)
@@ -87,3 +87,59 @@ def maskmatch(mask_lists):
 # - disgard memory
 # - recurse over indices not bitmasks directly (uint64)
 # - use vectorized SIMD if possible 
+# - c and gpu implementation
+# - debug info and visualization
+# - edge cases abdecken + unittests
+# - approximate (Monte Carlo/ IEP)
+# - count/ indices/ masks
+
+
+# Approximate valid combinations using inclusion-exclusion upper bound and pairwise overlaps.
+def approximate_valid_combinations(sets: List[Set[int]]) -> int:
+    """
+    Approximates the number of valid combinations (one element from each set, all chosen elements distinct)
+    using an upper bound strategy: for all possible pairings, subtract overlaps and multiply remaining possibilities.
+    """
+    if not sets:
+        return 0
+    # Naive upper bound: product of sizes
+    naive_upper = 1
+    for s in sets:
+        naive_upper *= len(s)
+    n = len(sets)
+    # If only one set, return its size
+    if n == 1:
+        return len(sets[0])
+    # Try all possible pairings (disjoint pairs)
+    indices = list(range(n))
+    min_upper = naive_upper
+    # All possible ways to pair up sets (may be odd, so allow one unpaired)
+    for perm in itertools.permutations(indices):
+        used = set()
+        pairs = []
+        i = 0
+        while i < n:
+            if i+1 < n:
+                pairs.append((perm[i], perm[i+1]))
+                used.add(perm[i])
+                used.add(perm[i+1])
+                i += 2
+            else:
+                # Odd one out
+                pairs.append((perm[i], None))
+                used.add(perm[i])
+                i += 1
+        # For this pairing, compute the upper bound
+        bound = 1
+        for a, b in pairs:
+            set_a = sets[a]
+            if b is None:
+                bound *= len(set_a)
+            else:
+                set_b = sets[b]
+                overlap = sum(1 for a in set_a for b in set_b if (a & b) != 0)
+                non_overlap = len(set_a) * len(set_b) - overlap
+                # Subtract overlaps for the pair
+                bound *= non_overlap
+        min_upper = min(min_upper, bound)
+    return min_upper
