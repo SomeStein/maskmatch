@@ -12,7 +12,7 @@ class Board:
     def __init__(self, width: int, height: int, ship_sizes: list[int]):
         self.width = width
         self.height = height
-        self.ship_sizes = sorted(ship_sizes)[::-1]
+        self.ship_sizes = ship_sizes
         self.cells = [[CellState.UNKNOWN for _ in range(width)] for _ in range(height)]
 
     def edit_cell(self, x: int, y: int, state: CellState) -> None:
@@ -81,10 +81,16 @@ if __name__ == "__main__":
     
     # Create board and generate mask lists
     #board = Board(10, 10, [6, 4, 4, 3, 3, 3, 2, 2, 2, 2])
-    board = Board(10, 10, [6, 4, 4, 3, 3, 3])
+    board = Board(10, 10, [3, 2, 2, 2])
     print(f"\nBoard initialized with width {board.width} and height {board.height}")
     mask_lists = board.generate_mask_lists()
     print(f"\n{sum([len(l) for l in mask_lists])} masks generated")
     
     # Test maskmatch
     result = maskmatch(mask_lists)
+    
+    
+# für battleships 
+# - moves tree so tief wie möglich vorberechnen (vsl. tiefe 3-5)
+# - danach monte carlo sampling + IEP 
+# - bis direkte berechnung möglich (vsl. wenn 5 Platzierungen übrig)

@@ -16,7 +16,13 @@ def _groups_by_duplicates(mask_lists: List[List[int]]) -> List[Tuple[List[int], 
 
     grouped = []
     for canon, idxs in group_map.items():
+        if len(idxs) != 1:
+            flag = True
         grouped.append((list(canon), len(idxs)))
+    
+    print("groups:")
+    for group in grouped:
+        print(len(group[0]))
     return grouped
 
 def _backtrack_multiplicity(
@@ -60,7 +66,6 @@ def _precombine_groups(mask_lists):
     
     # Grouping 
     groups = _groups_by_duplicates(mask_lists)
-    print(f"groups detected!")
     
     result = []
     for masks, multiplicity in groups:
@@ -71,6 +76,11 @@ def _precombine_groups(mask_lists):
         _backtrack_multiplicity(group_masks, masks, multiplicity, current_indeces)
 
         result.append((group_masks, multiplicity))
+    #result.sort(key = lambda x: len(x[0]))
+
+    print(f"groups precombined!")
+    for g,m in result:
+        print(len(g))
 
     return result
 
