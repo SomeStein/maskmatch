@@ -74,7 +74,7 @@ def calculate_valid_combinations(sets: List[Set[int]]) -> int:
 def maskmatch(mask_lists):
 
     # Preprocessing
-    precombined = _precombine_groups(mask_lists)
+    precombined = _precombine_groups(mask_lists)    
 
     # Recursion 
     # result = _recursion_on_lookups(precombined)
