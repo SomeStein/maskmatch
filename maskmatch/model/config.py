@@ -1,4 +1,3 @@
-
 # ==============================
 # file: model/config.py
 # ==============================
@@ -20,3 +19,4 @@ class SolverConfig:
     @classmethod
     def from_kwargs(cls, kwargs: Dict[str, Any]):
         return cls(**kwargs)
+

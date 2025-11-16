@@ -26,6 +26,17 @@ def _bt_count(hi_sets, lo_sets, idx, mask_hi, mask_lo):
     return total
 
 
+from tqdm import tqdm
+from multiprocessing import Pool, cpu_count
+
+# --- move worker to module level so it is picklable ---
+def worker_count_subset(args):
+    hi_sets, lo_sets, first_idx = args
+    hi0 = hi_sets[0][first_idx]
+    lo0 = lo_sets[0][first_idx]
+    return _bt_count(hi_sets[1:], lo_sets[1:], 0, hi0, lo0)
+
+
 def solve_backtracking(problem: Problem, config: SolverConfig, mode: str) -> Dict[str, Any]:
     """
     Wrapper around existing high-performance backend.
@@ -39,13 +50,21 @@ def solve_backtracking(problem: Problem, config: SolverConfig, mode: str) -> Dic
 
     if mode == "count":
         total = 0
-        for first_idx in range(len(hi_sets[0])):
-            hi0 = hi_sets[0][first_idx]
-            lo0 = lo_sets[0][first_idx]
-            total += _bt_count(hi_sets[1:], lo_sets[1:], 0, hi0, lo0)
+        first_len = len(hi_sets[0])
+
+        def _worker_count_subset(args):
+            hi_sets_, lo_sets_, first_idx_ = args
+            hi0_ = hi_sets_[0][first_idx_]
+            lo0_ = lo_sets_[0][first_idx_]
+            return _bt_count(hi_sets_[1:], lo_sets_[1:], 0, hi0_, lo0_)
+
+        with Pool(processes=max(1, min(cpu_count(), first_len))) as pool:
+            jobs = [(hi_sets, lo_sets, first_idx) for first_idx in range(first_len)]
+            for res in tqdm(pool.imap_unordered(_worker_count_subset, jobs), total=first_len, desc="Counting"):
+                total += res
         return {"count": int(total)}
 
-    # Modes below require storing data → slower
+    # Modes below require storing data; tqdm for visual progress → slower
     results = []
     index_results = []
 
