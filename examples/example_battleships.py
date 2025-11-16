@@ -1,5 +1,5 @@
 # define board class
-from maskmatch.core import maskmatch
+from maskmatch.core.core import maskmatch
 from enum import Enum, auto
 
 class CellState(Enum):
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     
     # Create board and generate mask lists
     #board = Board(10, 10, [6, 4, 4, 3, 3, 3, 2, 2, 2, 2])
-    board = Board(10, 10, [6, 4, 4, 3, 3, 2, 2]) #300.000.000 boards pro sekunde
+    board = Board(10, 10, [6, 4, 4, 3, 3, 2, 2]) #500.000.000 boards pro sekunde
     print(f"\nBoard initialized with width {board.width} and height {board.height}")
     mask_lists = board.generate_mask_lists()
     print(f"\n{sum([len(l) for l in mask_lists])} masks generated")
