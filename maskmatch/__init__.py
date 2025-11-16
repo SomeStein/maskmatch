@@ -1,18 +1,17 @@
 """
-maskmatch: Disjoint binary word selection package
+maskmatch: A modular solver framework for disjoint mask selection
 """
 
-from .core.core import maskmatch
-#from .dp_solver import dp_solve
-#from .parallel import parallel_solve
-#from .approximation import approx_solve
+# Public API: high-level, clean, stable
+from .model.problem import Problem
+from .model.config import SolverConfig
+from .core.solve import solve
 
 __all__ = [
-    "maskmatch",
-   # "dp_solve",
-   # "parallel_solve",
-   # "approx_solve"
+    "Problem",
+    "SolverConfig",
+    "solve",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Aaron Pumm"
