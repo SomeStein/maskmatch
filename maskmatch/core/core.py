@@ -1,4 +1,4 @@
-from maskmatch.core.utils import _precombine_groups, _generate_lookups, _bit_indices, _split_hi_lo_arr, _candidate_mask
+from maskmatch.utils import _precombine_groups, _generate_lookups, _bit_indices, _split_hi_lo_arr, _candidate_mask
 import itertools
 import numpy as np
 from tqdm import tqdm
