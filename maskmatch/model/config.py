@@ -3,16 +3,14 @@
 # ==============================
 
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 @dataclass
 class SolverConfig:
-    method: str = "backtracking"  # "backtracking", "approximate", "parallel"
+    method: str = "backtracking"  # "backtracking", "approximate"
     symmetry: bool = True
     allow_repetition: bool = False
-    approximate: bool = False
-    parallel: bool = False
     return_type: str = "count"  # "count", "combined_masks", "indices"
     heuristics: Dict[str, Any] = field(default_factory=dict)
 

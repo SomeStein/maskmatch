@@ -81,7 +81,7 @@ class Board:
 # Main Workflow Example
 # ==============================
 if __name__ == "__main__":
-    board = Board(10, 10, [6, 4, 4, 3, 3])
+    board = Board(10, 10, [6, 4, 4, 3, 3, 3, 2])
     print(f"Board {board.width}x{board.height} initialized.")
 
     mask_lists = board.generate_mask_lists()
