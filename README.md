@@ -24,3 +24,19 @@
 ```bash
 git clone https://github.com/SomeStein/maskmatch.git
 cd maskmatch
+```
+
+### ToDos:
+- find appropriate solve/config Parameters
+- make better core file structure
+- build method selector in solve 
+- parallel pool/ tqdm/ heuristics wrappers
+- use selected worker
+- fill Solution instance
+- return Solution
+- code method workers
+- code viz 
+- code saving
+- find good graph editor architecture
+- code editor
+
